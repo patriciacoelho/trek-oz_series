@@ -1,6 +1,6 @@
 # Trek-oz Series
 
-Scaffolding for project setup as PWA, with Vuetify, Vue Router, EsLint 
+Project for track watched series and discovery new ones
 
 ## Project setup
 Install dependencies
