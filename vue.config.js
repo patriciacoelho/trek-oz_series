@@ -6,8 +6,8 @@ module.exports = {
   ],
   // Config PWA's manifest.json and Service Worker
   pwa: {
-    name: 'PWA with Vuetify',
-    themeColor: '#285AB9',
+    name: 'Trek-oz Series',
+    themeColor: '#0B7346',
     msTileColor: '#2ECC71',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black-translucent',
@@ -16,7 +16,7 @@ module.exports = {
       swSrc: './src/service-worker.js',
     },
     manifestOptions: {
-      short_name: 'PWA with Vuetify',
+      short_name: 'Trek-oz Series',
       description: 'Boilerplate de um PWA com o Vuetify',
       orientation: 'portrait',
       display: 'standalone',

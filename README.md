@@ -1,4 +1,4 @@
-# PWA with Vuetify (Scaffolding/Boilerplate)
+# Trek-oz Series
 
 Scaffolding for project setup as PWA, with Vuetify, Vue Router, EsLint 
 
@@ -8,7 +8,7 @@ Install dependencies
 npm install
 ```
 
-If you not create an Trusted Web App (TWA) from this PWA, you can remove the lines of `vue.config.js` and the folder `.well-known`
+If you not create an Trusted Web App (TWA) from this PWA, you can remove the lines of `vue.config.js`
 ```
   configureWebpack: {
     plugins: [
@@ -44,8 +44,6 @@ npm run lint
 ```
 
 ### References
-See [Web App Manifest](https://web.dev/add-manifest/)
-
-See [Vuetify](https://vuetifyjs.com/en/)
-
-See [Vue CLI Configuration Reference](https://cli.vuejs.org/config/)
+* See [Web App Manifest](https://web.dev/add-manifest/).
+* See [Vuetify](https://vuetifyjs.com/en/).
+* See [Vue CLI Configuration Reference](https://cli.vuejs.org/config/).

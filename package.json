@@ -1,5 +1,5 @@
 {
-  "name": "pwa-with-vuetify",
+  "name": "trek-oz_series",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,11 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.11",
+    "vue-feather-icons": "^5.0.0",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.11",
     "vuex": "^3.2.0",
