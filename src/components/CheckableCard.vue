@@ -19,27 +19,21 @@
       </v-img>
     </v-card>
     <v-row>
-      <v-btn
-        class="white ml-auto mt-n7"
-        :class="checkedClass"
-        fab
-        small
-        retain-focus-on-click
-        @click="toggleCheck"
-      >
-        <check-circle-icon size="3x" class="check-icon"/>
-      </v-btn>
+      <check-circle
+        v-model="checked"
+        class="ml-auto mt-n7"
+      />
     </v-row>
   </v-col>
 </template>
 
 <script>
 /* eslint-disable no-console */
-import { CheckCircleIcon } from 'vue-feather-icons';
+import CheckCircle from './CheckCircle.vue';
 
 export default {
   components: {
-    CheckCircleIcon,
+    CheckCircle,
   },
 
   props: {
@@ -66,10 +60,6 @@ export default {
   },
 
   computed: {
-    checkedClass() {
-      return this.checked ? 'checked' : 'not-checked';
-    },
-
     gradientOverlay() {
       return this.title
         ? 'to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)'
@@ -78,37 +68,9 @@ export default {
   },
 
   methods: {
-    toggleCheck() {
-      this.checked = !this.checked;
-    },
-
     redirect() {
       console.log('Redirect to TV Show\'s Page: ', this.target);
     },
   },
 };
 </script>
-
-<style scoped>
-.checked:before, .not-checked:before {
-    background-color: none !important;
-}
-
-.not-checked {
-  background-color: #FFFFFF !important;
-  border-color: #FFFFFF !important;
-}
-
-.not-checked .check-icon {
-  color: rgba(0,0,0,.12) !important;
-}
-
-.checked {
-  background-color: #0B7346 !important;
-  border-color: #0B7346 !important;
-}
-
-.checked .check-icon {
-  color: white !important;
-}
-</style>
