@@ -20,7 +20,7 @@
       </v-img>
     </v-card>
     <div
-      class="d-flex flex-column row-width"
+      class="d-flex row-width"
     >
       <check-circle
         v-model="checked"
