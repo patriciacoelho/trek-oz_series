@@ -15,6 +15,7 @@
       >
         <v-card-title
           v-if="title"
+          class="d-inline-block text-truncate card-width"
           v-text="title"
         />
       </v-img>
@@ -77,5 +78,9 @@ export default {
 <style scoped>
 .row-width {
   width: 192px;
+}
+
+.card-width {
+  width: 180px;
 }
 </style>
