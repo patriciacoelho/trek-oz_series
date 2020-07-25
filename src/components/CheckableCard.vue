@@ -1,15 +1,15 @@
 <template>
-  <v-col
-    cols="6"
-  >
+  <span>
     <v-card
       rounded="xl"
+      width="180px"
       @click="redirect"
     >
       <v-img
         :src="imgSrc"
         class="white--text align-end"
         :gradient="gradientOverlay"
+        width="180px"
         height="260px"
       >
         <v-card-title
@@ -18,13 +18,15 @@
         />
       </v-img>
     </v-card>
-    <v-row>
+    <div
+      class="d-flex flex-column row-width"
+    >
       <check-circle
         v-model="checked"
         class="ml-auto mt-n7"
       />
-    </v-row>
-  </v-col>
+    </div>
+  </span>
 </template>
 
 <script>
@@ -74,3 +76,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.row-width {
+  width: 192px;
+}
+</style>

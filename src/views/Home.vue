@@ -3,9 +3,15 @@
     <v-content>
       <HelloWorld/>
       <v-row
-        class="px-3"
+        class="mx-3"
       >
         <checkable-card
+          class="mr-1"
+          :img-src="card.src"
+          target="/"
+        />
+        <checkable-card
+          class="mr-1"
           :img-src="card.src"
           target="/"
         />
