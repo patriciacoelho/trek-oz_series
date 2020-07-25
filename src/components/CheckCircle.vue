@@ -1,6 +1,7 @@
 <template>
   <span>
     <v-btn
+      v-bind="$attrs"
       :class="checkedClass"
       fab
       small

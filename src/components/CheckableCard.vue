@@ -1,9 +1,10 @@
 <template>
   <span>
     <v-card
+      v-on="$listeners"
       rounded="xl"
       width="180px"
-      @click="redirect"
+      :disabled="$attrs.disabled"
     >
       <v-img
         :src="imgSrc"
@@ -23,6 +24,8 @@
     >
       <check-circle
         v-model="checked"
+        :disabled="$attrs.disabled"
+        :loading="$attrs.loading"
         class="ml-auto mt-n7"
       />
     </div>
@@ -30,7 +33,6 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
 import CheckCircle from './CheckCircle.vue';
 
 export default {
@@ -48,11 +50,6 @@ export default {
       default: null,
       required: true,
     },
-    target: {
-      type: String,
-      default: null,
-      required: true,
-    },
   },
 
   data() {
@@ -61,17 +58,17 @@ export default {
     };
   },
 
+  watch: {
+    checked(value) {
+      this.$emit('status-changed', value);
+    },
+  },
+
   computed: {
     gradientOverlay() {
       return this.title
         ? 'to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)'
         : 'to top, rgba(0,0,0,.01), rgba(0,0,0,.035)';
-    },
-  },
-
-  methods: {
-    redirect() {
-      console.log('Redirect to TV Show\'s Page: ', this.target);
     },
   },
 };

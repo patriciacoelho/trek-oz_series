@@ -8,16 +8,14 @@
         <checkable-card
           class="mr-1"
           :img-src="card.src"
-          target="/"
-        />
-        <checkable-card
-          class="mr-1"
-          :img-src="card.src"
-          target="/"
+          :loading="loading"
+          :disabled="loading"
+          @status-changed="handleCheck"
+          @click="redirect"
         />
         <checkable-card
           :img-src="card.src"
-          target="/"
+          :title="card.title"
         />
       </v-row>
       <br>
@@ -27,6 +25,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import HelloWorld from '../components/HelloWorld.vue';
 import CheckableCard from '../components/CheckableCard.vue';
 
@@ -44,7 +43,19 @@ export default {
         title: 'Castle',
         src: 'https://images.justwatch.com/poster/185616855/s592',
       },
+      loading: false,
     };
+  },
+
+  methods: {
+    handleCheck() {
+      this.loading = true;
+      setTimeout(() => { this.loading = false; }, 5000);
+    },
+
+    redirect() {
+      console.log('Redirect to TV Show\'s Page');
+    },
   },
 };
 </script>
