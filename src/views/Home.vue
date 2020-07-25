@@ -6,15 +6,21 @@
       >
         <progress-card
           class="mr-3"
+          :title="otherCard.title"
           :img-src="otherCard.src"
           :completed="19"
           :total="23"
+          :next-episode="otherCard.nextEpisode"
+          :loading="loading"
+          :disabled="loading"
+          @status-changed="handleCheck"
+          @click="redirect"
         />
         <progress-card
-          :title="otherCard.title"
           :img-src="otherCard.src"
           :completed="otherCard.watched"
           :total="otherCard.total"
+          :next-episode="otherCard.nextEpisode"
         />
       </v-row>
       <v-row
@@ -62,6 +68,10 @@ export default {
         title: 'Psych',
         watched: 90,
         total: 121,
+        nextEpisode: {
+          ref: '2x09',
+          title: 'Flesh and Blood',
+        },
         src: 'https://i1.wp.com/elrincon.tv/wp-content/uploads/2014/02/psych.jpg',
       },
       loading: false,
