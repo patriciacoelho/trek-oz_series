@@ -1,13 +1,23 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
+import {
+  HOME,
+  SEARCH,
+} from '../constants/routes';
+
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: HOME.PATH,
+    name: HOME.NAME,
     component: () => import('../views/Home.vue'),
+  },
+  {
+    path: SEARCH.PATH,
+    name: SEARCH.NAME,
+    component: () => import('../views/Search.vue'),
   },
 ];
 
