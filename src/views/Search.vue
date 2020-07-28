@@ -4,10 +4,12 @@
       class="pb-main"
     >
       <v-text-field
+        v-model="search"
         class="ma-3"
         rounded
         label="Buscar"
         solo
+        @keydown.enter="handleSearch"
       >
         <template v-slot:label>
           <span class="grey--text text--lighten-1">
@@ -16,18 +18,37 @@
           <tv-icon size="1x" class="grey--text text--lighten-1 ml-1 mb-n-1px" />
         </template>
         <template v-slot:append>
-          <search-icon class="grey--text text--lighten-1"/>
+          <search-icon class="grey--text text--lighten-1 cursor-pointer" @click="handleSearch"/>
         </template>
       </v-text-field>
       <v-row
+        v-if="loading"
+        justify="center"
+      >
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
+      </v-row>
+      <v-alert
+        v-else-if="error"
+        dense
+        text
+        type="error"
+      >
+        Ops, tivemos um problema de conexão. Se o problema persistir contate o suporte.
+      </v-alert>
+      <v-row
+        v-else
         class="mx-3"
       >
         <checkable-card
           v-for="(card, index) in cards"
           :key="index"
+          :title="!card.src ? card.title : null"
           :img-src="card.src"
           :loading="card.loading"
-          :disabled="card.loading"
+          :disabled="true"
           @status-changed="handleCheck(index)"
           @click="redirect(index)"
         />
@@ -39,6 +60,10 @@
 
 <script>
 /* eslint-disable no-console */
+import {
+  getSeriesBySearch,
+  getSeriePosters,
+} from '@/services';
 import {
   SearchIcon,
   TvIcon,
@@ -54,33 +79,10 @@ export default {
 
   data() {
     return {
-      cards: [
-        {
-          title: 'Castle',
-          src: 'https://images.justwatch.com/poster/185616855/s592',
-          loading: false,
-        },
-        {
-          title: 'Chuck',
-          src: 'https://br.web.img2.acsta.net/c_216_288/medias/nmedia/18/77/00/94/19961049.jpg',
-          loading: false,
-        },
-        {
-          title: 'Psych',
-          src: 'https://www.hollywoodchicago.com/sites/default/files/psych.jpg',
-          loading: false,
-        },
-        {
-          title: 'Being Erica',
-          src: 'https://themodernguilt.files.wordpress.com/2013/02/being-erica-126.jpg',
-          loading: false,
-        },
-        {
-          title: 'Once Upon a Time',
-          src: 'https://i.pinimg.com/originals/fb/e5/a0/fbe5a07030e2faa110a17876c1f993b6.jpg',
-          loading: false,
-        },
-      ],
+      search: '',
+      cards: [],
+      loading: false,
+      error: false,
     };
   },
 
@@ -88,6 +90,46 @@ export default {
     handleCheck(index) {
       this.cards[index].loading = true;
       setTimeout(() => { this.cards[index].loading = false; }, 5000);
+    },
+
+    handleSearch() {
+      this.loading = true;
+      this.error = false;
+      getSeriesBySearch(this.search)
+        .then((results) => {
+          this.cards = results.map((result) => ({
+            title: result.show.title,
+            traktId: result.show.ids.trakt,
+            tmdbId: result.show.ids.tmdb,
+            src: '',
+            loading: true,
+          }));
+          this.loading = false;
+          this.loadImages();
+        })
+        .catch(() => {
+          this.loading = false;
+          this.error = true;
+        });
+    },
+
+    loadImages() {
+      this.cards.forEach((card) => {
+        getSeriePosters(card.tmdbId)
+          .then((posters) => {
+            const filePath = posters[0].file_path || null;
+            let imageUrl = '';
+            if (filePath) {
+              imageUrl = `http://image.tmdb.org/t/p/w342/${filePath}`;
+            }
+            card.src = imageUrl;
+            card.loading = false;
+          })
+          .catch(({ message }) => {
+            console.log(message);
+            card.loading = false;
+          });
+      });
     },
 
     redirect(index) {
@@ -104,5 +146,9 @@ export default {
 
 .pb-main {
   padding-bottom: 7.5rem !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
