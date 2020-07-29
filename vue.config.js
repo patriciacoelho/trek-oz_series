@@ -1,6 +1,7 @@
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  // publicPath: '/trek-oz_series/',
   transpileDependencies: [
     'vuetify',
   ],
