@@ -120,7 +120,7 @@ export default {
             const filePath = posters[0].file_path || null;
             let imageUrl = '';
             if (filePath) {
-              imageUrl = `http://image.tmdb.org/t/p/w342/${filePath}`;
+              imageUrl = `https://image.tmdb.org/t/p/w342${filePath}`;
             }
             card.src = imageUrl;
             card.loading = false;
