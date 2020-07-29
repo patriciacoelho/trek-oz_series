@@ -7,6 +7,7 @@
     </div>
     <v-bottom-navigation
       v-model="nav"
+      class="justify-space-between align-center px-4"
       app
       height="4.5rem"
       color="primary"
