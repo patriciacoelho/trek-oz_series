@@ -48,7 +48,7 @@
           :title="!card.src ? card.title : null"
           :img-src="card.src"
           :loading="card.loading"
-          :disabled="true"
+          :disabled="card.loading"
           @status-changed="handleCheck(index)"
           @click="redirect(index)"
         />
@@ -98,9 +98,7 @@ export default {
       getSeriesBySearch(this.search)
         .then((results) => {
           this.cards = results.map((result) => ({
-            title: result.show.title,
-            traktId: result.show.ids.trakt,
-            tmdbId: result.show.ids.tmdb,
+            ...result.show,
             src: '',
             loading: true,
           }));
@@ -115,7 +113,7 @@ export default {
 
     loadImages() {
       this.cards.forEach((card) => {
-        getSeriePosters(card.tmdbId)
+        getSeriePosters(card.ids.tmdb)
           .then((posters) => {
             const filePath = posters[0].file_path || null;
             let imageUrl = '';
@@ -133,7 +131,9 @@ export default {
     },
 
     redirect(index) {
+      const traktWebsite = 'https://trakt.tv/';
       console.log(`Redirect to ${this.cards[index].title} TV Show's Page`);
+      window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}`;
     },
   },
 };
