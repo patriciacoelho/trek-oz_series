@@ -131,7 +131,7 @@ export default {
     },
 
     redirect(index) {
-      const traktWebsite = 'https://trakt.tv/';
+      const traktWebsite = 'https://trakt.tv';
       console.log(`Redirect to ${this.cards[index].title} TV Show's Page`);
       window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}`;
     },
