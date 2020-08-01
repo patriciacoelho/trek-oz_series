@@ -2,7 +2,7 @@
   <div>
     <v-app>
       <v-main
-        class="pb-main"
+        :class="padding"
       >
         <slot/>
       </v-main>
@@ -24,6 +24,12 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+
+  data() {
+    return {
+      padding: !this.noMenu ?? 'pb-main',
+    };
   },
 };
 </script>
