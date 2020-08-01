@@ -143,8 +143,4 @@ export default {
 .row-width {
   width: 300px;
 }
-
-.cursor-pointer {
-  cursor: pointer;
-}
 </style>
