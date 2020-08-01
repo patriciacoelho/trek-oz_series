@@ -3,7 +3,7 @@
     <div
       class="powered-by-wrapper"
     >
-      <powered-by class="mt-3"/>
+      <powered-by/>
     </div>
     <v-bottom-navigation
       v-model="nav"
@@ -28,15 +28,15 @@
         <search-icon />
       </v-btn>
 
-      <v-btn value="dashboard">
+      <v-btn id="dashboard">
         <grid-icon />
       </v-btn>
 
-      <v-btn value="calendar">
+      <v-btn id="calendar">
         <calendar-icon />
       </v-btn>
 
-      <v-btn value="watched">
+      <v-btn id="watched">
         <archive-icon />
       </v-btn>
     </v-bottom-navigation>
