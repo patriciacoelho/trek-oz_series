@@ -91,6 +91,21 @@
               Temporadas
             </p>
             <v-divider></v-divider>
+            <v-row
+              class="mt-4"
+            >
+              <checkable-card
+                v-for="(card, index) in cards"
+                class="pb-2"
+                :key="index"
+                :title="!card.src ? card.title : null"
+                :img-src="card.src"
+                :loading="card.loading"
+                :disabled="card.loading"
+                @status-changed="handleCheck(index)"
+                @click="redirect(index)"
+              />
+            </v-row>
           </div>
           <div
             class="pt-3"
@@ -136,11 +151,13 @@ import {
 } from 'vue-feather-icons';
 import AppHeader from '../components/AppHeader.vue';
 import ActorsCarousel from '../components/ActorsCarousel.vue';
+import CheckableCard from '../components/CheckableCard.vue';
 
 export default {
   components: {
     AppHeader,
     ActorsCarousel,
+    CheckableCard,
   },
 
   data() {
@@ -148,6 +165,28 @@ export default {
       loading: false,
       error: false,
       headerHeight: '180px',
+      cards: [
+        {
+          title: '1ª Temporada',
+          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/sKBT62pd7hY6g394dxh0nLpBVtQ.jpg',
+          loading: false,
+        },
+        {
+          title: '2ª Temporada',
+          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/saFSDEenUvCmJUDE3XaEclPnx2j.jpg',
+          loading: false,
+        },
+        {
+          title: '3ª Temporada',
+          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/fp1z9onRhSOCOXWb4HtYgVPGixD.jpg',
+          loading: false,
+        },
+        {
+          title: '4ª Temporada',
+          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/3FhlRt6oYEAbCbVjbbCq8IBIVam.jpg',
+          loading: false,
+        },
+      ],
       actors: [
         {
           name: 'James Roday',
@@ -206,6 +245,17 @@ export default {
 
     returnToPreviousPage() {
       console.log('Return to previous page');
+    },
+
+    handleCheck(index) {
+      this.cards[index].loading = true;
+      setTimeout(() => { this.cards[index].loading = false; }, 5000);
+    },
+
+    redirect(index) {
+      const traktWebsite = 'https://trakt.tv';
+      console.log(`Redirect to ${this.cards[index].title} Season's Page`);
+      window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}/seasons/${index}`;
     },
   },
 
