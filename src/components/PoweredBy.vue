@@ -34,7 +34,8 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    padding-top: 12px;
+    padding-bottom: 16px;
     color: gray;
   }
 </style>

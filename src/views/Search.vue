@@ -1,61 +1,56 @@
 <template>
-  <v-app>
-    <v-main
-      class="pb-main"
+  <main-wrapper>
+    <v-text-field
+      v-model="search"
+      class="ma-3"
+      rounded
+      label="Buscar"
+      solo
+      @keydown.enter="handleSearch"
     >
-      <v-text-field
-        v-model="search"
-        class="ma-3"
-        rounded
-        label="Buscar"
-        solo
-        @keydown.enter="handleSearch"
-      >
-        <template v-slot:label>
-          <span class="grey--text text--lighten-1">
-            Que série cê tá procurando?
-          </span>
-          <tv-icon size="1x" class="grey--text text--lighten-1 ml-1 mb-n-1px" />
-        </template>
-        <template v-slot:append>
-          <search-icon class="grey--text text--lighten-1 cursor-pointer" @click="handleSearch"/>
-        </template>
-      </v-text-field>
-      <v-row
-        v-if="loading"
-        justify="center"
-      >
-        <v-progress-circular
-          indeterminate
-          color="primary"
-        />
-      </v-row>
-      <v-alert
-        v-else-if="error"
-        dense
-        text
-        type="error"
-      >
-        Ops, tivemos um problema de conexão. Se o problema persistir contate o suporte.
-      </v-alert>
-      <v-row
-        v-else
-        class="mx-3"
-      >
-        <checkable-card
-          v-for="(card, index) in cards"
-          :key="index"
-          :title="!card.src ? card.title : null"
-          :img-src="card.src"
-          :loading="card.loading"
-          :disabled="card.loading"
-          @status-changed="handleCheck(index)"
-          @click="redirect(index)"
-        />
-      </v-row>
-    </v-main>
-    <nav-bar />
-  </v-app>
+      <template v-slot:label>
+        <span class="grey--text text--lighten-1">
+          Que série cê tá procurando?
+        </span>
+        <tv-icon size="1x" class="grey--text text--lighten-1 ml-1 mb-n-1px" />
+      </template>
+      <template v-slot:append>
+        <search-icon class="grey--text text--lighten-1 cursor-pointer" @click="handleSearch"/>
+      </template>
+    </v-text-field>
+    <v-row
+      v-if="loading"
+      justify="center"
+    >
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      />
+    </v-row>
+    <v-alert
+      v-else-if="error"
+      dense
+      text
+      type="error"
+    >
+      Ops, tivemos um problema de conexão. Se o problema persistir contate o suporte.
+    </v-alert>
+    <v-row
+      v-else
+      class="mx-3"
+    >
+      <checkable-card
+        v-for="(card, index) in cards"
+        :key="index"
+        :title="!card.src ? card.title : null"
+        :img-src="card.src"
+        :loading="card.loading"
+        :disabled="card.loading"
+        @status-changed="handleCheck(index)"
+        @click="redirect(index)"
+      />
+    </v-row>
+  </main-wrapper>
 </template>
 
 <script>
@@ -68,6 +63,7 @@ import {
   SearchIcon,
   TvIcon,
 } from 'vue-feather-icons';
+import { DETAILS } from '../constants/routes';
 import CheckableCard from '../components/CheckableCard.vue';
 
 export default {
@@ -131,9 +127,7 @@ export default {
     },
 
     redirect(index) {
-      const traktWebsite = 'https://trakt.tv';
-      console.log(`Redirect to ${this.cards[index].title} TV Show's Page`);
-      window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}`;
+      this.$router.push({ name: DETAILS.NAME, params: { ids: this.cards[index].ids } });
     },
   },
 };
@@ -142,13 +136,5 @@ export default {
 <style>
 .mb-n-1px {
   margin-bottom: -1px !important;
-}
-
-.pb-main {
-  padding-bottom: 7.5rem !important;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 </style>

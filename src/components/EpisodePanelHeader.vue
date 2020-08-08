@@ -1,24 +1,15 @@
 <template>
   <span>
     <v-card
-      v-on="$listeners"
       rounded="xl"
-      width="150px"
       :disabled="$attrs.disabled"
     >
       <v-img
         :src="imgSrc"
         class="white--text align-end"
         :gradient="gradientOverlay"
-        width="150px"
-        height="215px"
-      >
-        <v-card-title
-          v-if="title"
-          class="d-inline-block text-truncate card-width"
-          v-text="title"
-        />
-      </v-img>
+        aspect-ratio="1.94"
+      />
     </v-card>
     <div
       class="d-flex row-width"
@@ -30,25 +21,57 @@
         class="ml-auto mt-n7"
       />
     </div>
+    <div
+      class="mx-3"
+    >
+      <v-row
+        align="center"
+        justify="space-between"
+        class="pa-3 pt-1"
+      >
+        <v-col class="py-0">
+          <h2>{{ title }}</h2>
+        </v-col>
+        <v-col
+          cols="auto"
+          class="pa-0"
+        >
+          <chevron-up-icon v-if="active" />
+          <chevron-down-icon v-else />
+        </v-col>
+      </v-row>
+    </div>
   </span>
 </template>
 
 <script>
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from 'vue-feather-icons';
 import CheckCircle from './CheckCircle.vue';
 
 export default {
   components: {
     CheckCircle,
+    ChevronDownIcon,
+    ChevronUpIcon,
   },
 
   props: {
     title: {
       type: String,
       default: null,
+      required: true,
     },
     imgSrc: {
       type: String,
       default: null,
+      required: true,
+    },
+    active: {
+      type: Boolean,
+      default: false,
       required: true,
     },
   },
@@ -56,6 +79,7 @@ export default {
   data() {
     return {
       checked: false,
+      gradientOverlay: 'to top, rgba(0,0,0,.01), rgba(0,0,0,.035)',
     };
   },
 
@@ -64,23 +88,11 @@ export default {
       this.$emit('status-changed', value);
     },
   },
-
-  computed: {
-    gradientOverlay() {
-      return this.title
-        ? 'to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)'
-        : 'to top, rgba(0,0,0,.01), rgba(0,0,0,.035)';
-    },
-  },
 };
 </script>
 
 <style scoped>
 .row-width {
-  width: calc(150px + 12px);
-}
-
-.card-width {
-  width: 150px;
+  width: calc(100% + 16px);
 }
 </style>

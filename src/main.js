@@ -4,11 +4,11 @@ import './registerServiceWorker';
 import router from './router';
 import vuetify from './plugins/vuetify';
 
-import NavBar from './components/NavBar.vue';
+import MainWrapper from './components/MainWrapper.vue';
 
 Vue.config.productionTip = false;
 
-Vue.component('nav-bar', NavBar);
+Vue.component('main-wrapper', MainWrapper);
 
 new Vue({
   router,
