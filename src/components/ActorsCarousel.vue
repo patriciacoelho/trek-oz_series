@@ -1,5 +1,7 @@
 <template>
-  <span>
+  <span
+    v-if="actors"
+  >
     <slick
       v-bind="slickOptions"
       class="mb-8"
@@ -10,10 +12,10 @@
         class="d-flex justify-center px-0 pb-5"
       >
         <div>
-          <p
+          <!-- <p
             class="text--disabled mb-0 mr-1 text-end">
             {{ REGULARITY_TEXT[actor.regularity] }}
-          </p>
+          </p> -->
           <v-img
             :src="actor.src"
             width="100"
@@ -40,7 +42,7 @@
 import VueSlickCarousel from 'vue-slick-carousel';
 import 'vue-slick-carousel/dist/vue-slick-carousel.css';
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
-import { REGULARITY_TEXT } from '../constants/regularity';
+// import { REGULARITY_TEXT } from '../constants/regularity';
 
 export default {
   components: {
@@ -49,15 +51,14 @@ export default {
 
   props: {
     actors: {
-      type: Array,
-      default: () => ([]),
+      default: null,
       required: true,
     },
   },
 
   data() {
     return {
-      REGULARITY_TEXT,
+      // REGULARITY_TEXT,
       slickOptions: {
         dots: true,
         focusOnSelect: false,
