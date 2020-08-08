@@ -9,7 +9,7 @@
       <app-header
         :title="show.name"
         :backdrop-image="show.backdrop_src"
-        subtitle="4ª Temporada"
+        :subtitle="subtitle"
         :height="headerHeight"
         @back="returnToPreviousPage"
       />
@@ -45,7 +45,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Estreia: </span><br>
-              {{show.first_air_date}}
+              {{premiere}}
             </v-col>
             <v-col
               v-if="show.last_air_date"
@@ -54,7 +54,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Último episódio: </span><br>
-              {{show.last_air_date}}
+              {{finale}}
             </v-col>
             <v-col
               class="pb-1 pt-0"
@@ -70,7 +70,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Total de Episódios: </span><br>
-              {{show.number_of_episodes}} em {{show.number_of_seasons}} temporadas
+              {{numberOfEpisodes}}
             </v-col>
           </v-row>
         </v-card-subtitle>
@@ -101,7 +101,7 @@
           </div>
           <div
             class="pt-3"
-            v-if="type !== 'season'"
+            v-if="renderType !== 'season'"
           >
             <p
               class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
@@ -141,7 +141,7 @@
               flat
             >
               <v-expansion-panel
-                v-for="(episode, index) in episodes"
+                v-for="(episode, index) in season.episodes"
                 :key="index"
               >
                 <v-expansion-panel-header
@@ -166,9 +166,9 @@
                       cols="12"
                     >
                       {{ episode.aired }}
-                      <span class="caption text--disabled">
+                      <!-- <span class="caption text--disabled">
                         - {{ episode.runtime }}
-                      </span>
+                      </span> -->
                     </v-col>
                   </v-row>
                   {{ episode.description }}
@@ -180,7 +180,9 @@
       </v-card>
     </v-card>
     <v-row
-      v-else-if="loading"
+      v-else-if="loading || loadingSeason"
+      class="fill-height"
+      align="center"
       justify="center"
     >
       <v-progress-circular
@@ -206,6 +208,7 @@ import 'moment/locale/pt-br';
 import {
   getSerieDetails,
   getSerieCredits,
+  getSerieSeason,
 } from '@/services';
 import {
 //
@@ -226,58 +229,83 @@ export default {
   props: {
     ids: {
       type: Object,
-      default: () => ({
-        slug: 'psych',
-        tmdb: 1447,
-      }),
-      // required: true,
+      default: null,
+      required: true,
+    },
+    type: {
+      type: String,
+      default: 'show',
+    },
+    seasonNumber: {
+      type: Number,
+      default: null,
     },
   },
 
   data() {
     return {
+      renderType: this.type,
+      seasonIndex: this.seasonNumber,
       loading: false,
       error: false,
       loadingCast: false,
       errorCast: false,
+      loadingSeason: false,
+      errorSeason: false,
       headerHeight: '180px',
       activePanel: null,
       show: null,
       cast: null,
-      type: 'show',
-      episodes: [
-        {
-          title: '4x05 Shawn Gets the Yips',
-          description: 'After a cop bar is shot up in an apparent robbery during Officer McNab\'s birthday celebration, Shawn realizes the shooter was actually targeting Lassiter.',
-          aired: '12 September 2009 01:00 on USA Network',
-          runtime: '42 mins',
-          src: 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/b8mUarVZtTsvHWiV2htl7ibC28e.jpg',
-        },
-        {
-          title: '4x06 Bollywood Homicide',
-          description: 'Raj, a young East Indian man whose serious girlfriends have all met with suspicious accidents, is convinced that he is the victim of a curse, but Shawn and Gus aren\'t buying the supernatural explanation. They are convinced that a mysterious assailant is actually responsible and they\'re out to catch the culprit.',
-          aired: '19 September 2009 01:00 on USA Network',
-          runtime: '42 mins',
-          src: 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/bek5mmpDFypkTwBUABTUY1BUQZ0.jpg',
-        },
-        {
-          title: '4x07 High Top Fade Out',
-          description: 'Shawn and Gus investigate the death of Leonald Callahan, aka Diddle, a computer cryptologist who was the baritone in Gus’s old college a capella group.',
-          aired: '26 September 2009 01:00 on USA Network',
-          runtime: '43 mins',
-          src: 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/dFpScHJvBRkZf275qrbhV00YOK5.jpg',
-        },
-      ],
+      season: null,
     };
   },
 
   beforeMount() {
-    this.fillSerialDetails();
+    this.fillSerieDetails();
+    if (this.renderType === 'season') {
+      this.fillSeasonDetails();
+    }
     this.fillCastInfo();
   },
 
+  watch: {
+    renderType(value) {
+      if (value === 'season') {
+        this.fillSeasonDetails();
+      }
+    },
+  },
+
   methods: {
-    fillSerialDetails() {
+    fillSeasonDetails() {
+      this.loadingSeason = true;
+      this.errorSeason = false;
+      getSerieSeason(this.ids.tmdb, this.seasonIndex).then((data) => {
+        const totalEpisodes = data.episodes.length;
+        const firstAirDate = data.episodes[0].air_date;
+        const lastAirDate = data.episodes[totalEpisodes - 1].air_date;
+        const episodes = data.episodes.map((episode) => ({
+          ...episode,
+          title: `${episode.season_number}x${episode.episode_number} ${episode.name}`,
+          description: episode.overview,
+          aired: episode.air_date ? moment(episode.air_date).format('DD [de] MMMM [de] YYYY') : null,
+          src: `https://image.tmdb.org/t/p/original${episode.still_path}`,
+        }));
+        this.season = {
+          ...data,
+          episodes,
+          first_air_date: firstAirDate ? moment(firstAirDate).format('DD [de] MMMM [de] YYYY') : null,
+          last_air_date: lastAirDate ? moment(lastAirDate).format('DD [de] MMMM [de] YYYY') : null,
+          number_of_episodes: totalEpisodes,
+        };
+        this.loadingSeason = false;
+      }).catch(() => {
+        this.loadingSeason = false;
+        this.errorSeason = true;
+      });
+    },
+
+    fillSerieDetails() {
       this.loading = true;
       this.error = false;
       getSerieDetails(this.ids.tmdb).then((data) => {
@@ -285,6 +313,7 @@ export default {
         const genres = this.show.genres.map((genre) => genre.name);
         const seasons = this.show.seasons.map((season) => ({
           id: season.id,
+          season_number: season.season_number,
           title: season.name,
           src: `https://image.tmdb.org/t/p/w342${season.poster_path}`,
           loading: false,
@@ -329,7 +358,11 @@ export default {
     },
 
     returnToPreviousPage() {
-      console.log('Return to previous page');
+      if (this.renderType === 'season') {
+        this.renderType = 'show';
+        return;
+      }
+      this.$router.go(-1);
     },
 
     handleCheck(index) {
@@ -338,8 +371,8 @@ export default {
     },
 
     redirect(index) {
-      const traktWebsite = 'https://trakt.tv';
-      window.location = `${traktWebsite}/shows/${this.ids.slug}/seasons/${index}`;
+      this.renderType = 'season';
+      this.seasonIndex = this.show.seasons[index].season_number;
     },
   },
 
@@ -348,9 +381,30 @@ export default {
       return this.headerHeight === '130px' ? 'expanded-body' : '';
     },
 
+    subtitle() {
+      return this.season ? this.season.name : null;
+    },
+
+    premiere() {
+      return this.renderType === 'season' ? this.season.first_air_date : this.show.first_air_date;
+    },
+
+    finale() {
+      return this.renderType === 'season' ? this.season.last_air_date : this.show.last_air_date;
+    },
+
+    numberOfEpisodes() {
+      if (this.renderType === 'season') {
+        return `${this.season.number_of_episodes} episódios na temporada`;
+      }
+      return `${this.show.number_of_episodes} em ${this.show.number_of_seasons} temporadas`;
+    },
+
     ready() {
       return !(this.loading && this.loadingCast)
-        && !(this.error || this.errorCast);
+        && (this.renderType !== 'season' || !this.loadingSeason)
+        && (this.renderType !== 'season' || !this.errorSeason)
+        && !(this.error && this.errorCast);
     },
   },
 };
