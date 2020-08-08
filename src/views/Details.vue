@@ -2,9 +2,13 @@
   <main-wrapper
     no-menu
   >
-    <v-card class="overflow-hidden">
+    <v-card
+      v-if="ready"
+      class="overflow-hidden"
+    >
       <app-header
-        title="Psych"
+        :title="show.name"
+        :backdrop-image="show.backdrop_src"
         subtitle="4ª Temporada"
         :height="headerHeight"
         @back="returnToPreviousPage"
@@ -19,12 +23,13 @@
         <v-card-subtitle>
           <v-row>
             <v-col
+              v-if="show.genres.length !== 0"
               class="pb-1 pt-0"
               cols="6"
               md="3"
             >
               <span class="caption text-uppercase"> Gênero: </span><br>
-              Ação, Aventura, Comédia
+              {{show.genres.join(', ')}}
             </v-col>
             <v-col
               class="pb-1 pt-0"
@@ -32,7 +37,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Status: </span><br>
-              Cancelada
+              {{show.status}}
             </v-col>
             <v-col
               class="pb-1 pt-0"
@@ -40,15 +45,16 @@
               md="3"
             >
               <span class="caption text-uppercase"> Estreia: </span><br>
-              25 de setembro de 2007
+              {{show.first_air_date}}
             </v-col>
             <v-col
+              v-if="show.last_air_date"
               class="pb-1 pt-0"
               cols="6"
               md="3"
             >
               <span class="caption text-uppercase"> Último episódio: </span><br>
-              21 de março de 2012
+              {{show.last_air_date}}
             </v-col>
             <v-col
               class="pb-1 pt-0"
@@ -56,7 +62,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Duração do episódio: </span><br>
-              40 min
+              {{show.episode_run_time}} min
             </v-col>
             <v-col
               class="pb-1 pt-0"
@@ -64,7 +70,7 @@
               md="3"
             >
               <span class="caption text-uppercase"> Total de Episódios: </span><br>
-              91 em 5 temporadas
+              {{show.number_of_episodes}} em {{show.number_of_seasons}} temporadas
             </v-col>
           </v-row>
         </v-card-subtitle>
@@ -75,11 +81,22 @@
             <p
               class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
             >
-              Atores
+              Sinopse
+            </p>
+            <v-divider class="mb-5"/>
+            {{show.overview}}
+          </div>
+          <div
+            class="pt-3"
+          >
+            <p
+              class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
+            >
+              Elenco
             </p>
             <v-divider></v-divider>
             <actors-carousel
-              :actors="actors"
+              :actors="cast"
             />
           </div>
           <div
@@ -96,10 +113,10 @@
               class="mt-4"
             >
               <checkable-card
-                v-for="(card, index) in cards"
+                v-for="(card, index) in show.seasons"
                 class="pb-2"
                 :key="index"
-                :title="!card.src ? card.title : null"
+                :title="card.title"
                 :img-src="card.src"
                 :loading="card.loading"
                 :disabled="card.loading"
@@ -163,7 +180,7 @@
       </v-card>
     </v-card>
     <v-row
-      v-if="loading"
+      v-else-if="loading"
       justify="center"
     >
       <v-progress-circular
@@ -172,7 +189,7 @@
       />
     </v-row>
     <v-alert
-      v-else-if="error"
+      v-else
       dense
       text
       type="error"
@@ -184,8 +201,11 @@
 
 <script>
 /* eslint-disable no-console */
+import moment from 'moment';
+import 'moment/locale/pt-br';
 import {
-//
+  getSerieDetails,
+  getSerieCredits,
 } from '@/services';
 import {
 //
@@ -203,13 +223,28 @@ export default {
     EpisodePanelHeader,
   },
 
+  props: {
+    ids: {
+      type: Object,
+      default: () => ({
+        slug: 'psych',
+        tmdb: 1447,
+      }),
+      // required: true,
+    },
+  },
+
   data() {
     return {
       loading: false,
       error: false,
+      loadingCast: false,
+      errorCast: false,
       headerHeight: '180px',
       activePanel: null,
-      type: 'season',
+      show: null,
+      cast: null,
+      type: 'show',
       episodes: [
         {
           title: '4x05 Shawn Gets the Yips',
@@ -233,76 +268,58 @@ export default {
           src: 'https://image.tmdb.org/t/p/w227_and_h127_bestv2/dFpScHJvBRkZf275qrbhV00YOK5.jpg',
         },
       ],
-      cards: [
-        {
-          title: '1ª Temporada',
-          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/sKBT62pd7hY6g394dxh0nLpBVtQ.jpg',
-          loading: false,
-        },
-        {
-          title: '2ª Temporada',
-          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/saFSDEenUvCmJUDE3XaEclPnx2j.jpg',
-          loading: false,
-        },
-        {
-          title: '3ª Temporada',
-          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/fp1z9onRhSOCOXWb4HtYgVPGixD.jpg',
-          loading: false,
-        },
-        {
-          title: '4ª Temporada',
-          src: 'https://image.tmdb.org/t/p/w130_and_h195_bestv2/3FhlRt6oYEAbCbVjbbCq8IBIVam.jpg',
-          loading: false,
-        },
-      ],
-      actors: [
-        {
-          name: 'James Roday',
-          character: 'Shawn Spencer',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/1iRFSkNsB45BHUMyWww2h6K9B8Z.jpg',
-        },
-        {
-          name: 'Dulé Hill',
-          character: 'Burton Guster',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/fPJ8lIx6WwBgO2AhnHQSeiZiAUy.jpg',
-        },
-        {
-          name: 'Timothy Omundson',
-          character: 'Carlton Lassiter',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/fPhLMiodU7mVegOYvJ8aoj84ZHJ.jpg',
-        },
-        {
-          name: 'Maggie Lawson',
-          character: 'Juliet O\'Hara',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/9AZEDpnDrOMkCf9hqWhY4szrv3X.jpg',
-        },
-        {
-          name: 'Kirsten Nelson',
-          character: 'Karen Vick',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/7TfweasXJLw5cKNAiV1xYzIJYcT.jpg',
-        },
-        {
-          name: 'Corbin Bernsen',
-          character: 'Henry Spencer',
-          regularity: 'regular', // recurring, guest
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/mLftTYHrvct0VBB8pGhJjLHZUXQ.jpg',
-        },
-        {
-          name: 'Sage Brocklebank',
-          character: 'Buzz McNab',
-          regularity: 'recurring',
-          src: 'https://image.tmdb.org/t/p/w138_and_h175_face/7BFFanLsfc2m4FU7Hvw8GDTGOEt.jpg',
-        },
-      ],
     };
   },
 
+  beforeMount() {
+    this.fillSerialDetails();
+    this.fillCastInfo();
+  },
+
   methods: {
+    fillSerialDetails() {
+      this.loading = true;
+      this.error = false;
+      getSerieDetails(this.ids.tmdb).then((data) => {
+        this.show = data;
+        const genres = this.show.genres.map((genre) => genre.name);
+        const seasons = this.show.seasons.map((season) => ({
+          id: season.id,
+          title: season.name,
+          src: `https://image.tmdb.org/t/p/w342${season.poster_path}`,
+          loading: false,
+        }));
+        this.show = {
+          ...data,
+          genres,
+          seasons,
+          episode_run_time: data.episode_run_time[0],
+          first_air_date: data.first_air_date ? moment(data.first_air_date).format('DD [de] MMMM [de] YYYY') : null,
+          last_air_date: data.last_air_date ? moment(data.last_air_date).format('DD [de] MMMM [de] YYYY') : null,
+          backdrop_src: `https://image.tmdb.org/t/p/w780${data.backdrop_path}`,
+        };
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+        this.error = true;
+      });
+    },
+
+    fillCastInfo() {
+      this.loadingCast = true;
+      this.errorCast = false;
+      getSerieCredits(this.ids.tmdb).then(({ cast }) => {
+        this.cast = cast.map((actor) => ({
+          ...actor,
+          src: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
+        }));
+        this.loadingCast = false;
+      }).catch(() => {
+        this.loadingCast = false;
+        this.errorCast = true;
+      });
+    },
+
     onScroll(e) {
       if (e.target.scrollTop > 130) {
         this.headerHeight = '130px';
@@ -316,20 +333,24 @@ export default {
     },
 
     handleCheck(index) {
-      this.cards[index].loading = true;
-      setTimeout(() => { this.cards[index].loading = false; }, 5000);
+      this.show.seasons[index].loading = true;
+      setTimeout(() => { this.show.seasons[index].loading = false; }, 5000);
     },
 
     redirect(index) {
       const traktWebsite = 'https://trakt.tv';
-      console.log(`Redirect to ${this.cards[index].title} Season's Page`);
-      window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}/seasons/${index}`;
+      window.location = `${traktWebsite}/shows/${this.ids.slug}/seasons/${index}`;
     },
   },
 
   computed: {
     expandedHeight() {
       return this.headerHeight === '130px' ? 'expanded-body' : '';
+    },
+
+    ready() {
+      return !(this.loading && this.loadingCast)
+        && !(this.error || this.errorCast);
     },
   },
 };
