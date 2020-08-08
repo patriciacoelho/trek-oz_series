@@ -63,6 +63,7 @@ import {
   SearchIcon,
   TvIcon,
 } from 'vue-feather-icons';
+import { DETAILS } from '../constants/routes';
 import CheckableCard from '../components/CheckableCard.vue';
 
 export default {
@@ -126,9 +127,7 @@ export default {
     },
 
     redirect(index) {
-      const traktWebsite = 'https://trakt.tv';
-      console.log(`Redirect to ${this.cards[index].title} TV Show's Page`);
-      window.location = `${traktWebsite}/shows/${this.cards[index].ids.slug}`;
+      this.$router.push({ name: DETAILS.NAME, params: { ids: this.cards[index].ids } });
     },
   },
 };

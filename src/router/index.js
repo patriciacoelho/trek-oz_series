@@ -24,6 +24,7 @@ const routes = [
     path: DETAILS.PATH,
     name: DETAILS.NAME,
     component: () => import('../views/Details.vue'),
+    props: true,
   },
 ];
 
