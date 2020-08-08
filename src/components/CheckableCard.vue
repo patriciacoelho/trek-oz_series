@@ -3,15 +3,15 @@
     <v-card
       v-on="$listeners"
       rounded="xl"
-      width="180px"
+      width="150px"
       :disabled="$attrs.disabled"
     >
       <v-img
         :src="imgSrc"
         class="white--text align-end"
         :gradient="gradientOverlay"
-        width="180px"
-        height="260px"
+        width="150px"
+        height="215px"
       >
         <v-card-title
           v-if="title"
@@ -68,7 +68,7 @@ export default {
   computed: {
     gradientOverlay() {
       return this.title
-        ? 'to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)'
+        ? 'to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)'
         : 'to top, rgba(0,0,0,.01), rgba(0,0,0,.035)';
     },
   },
@@ -77,10 +77,10 @@ export default {
 
 <style scoped>
 .row-width {
-  width: 192px;
+  width: calc(150px + 12px);
 }
 
 .card-width {
-  width: 180px;
+  width: 150px;
 }
 </style>
