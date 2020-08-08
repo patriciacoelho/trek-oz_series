@@ -1,6 +1,6 @@
 <template>
   <v-img
-    :src="'https://i1.wp.com/elrincon.tv/wp-content/uploads/2014/02/psych.jpg'"
+    :src="backdropImage"
     :height="height"
     :gradient="gradientOverlay"
     scroll-target="#scroll-target"
@@ -47,6 +47,11 @@ export default {
     subtitle: {
       type: String,
       default: null,
+    },
+    backdropImage: {
+      type: String,
+      default: '',
+      required: true,
     },
   },
 
