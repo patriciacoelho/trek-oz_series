@@ -8,7 +8,12 @@ export const SEARCH = {
   PATH: '/search',
 };
 
-export const DETAILS = {
-  NAME: 'Details',
-  PATH: '/details',
+export const TV_SHOW = {
+  NAME: 'TV Show',
+  PATH: '/:slug',
+};
+
+export const SEASON = {
+  NAME: 'Season',
+  PATH: 'season/:seasonNumber',
 };

@@ -4,7 +4,8 @@ import VueRouter from 'vue-router';
 import {
   HOME,
   SEARCH,
-  DETAILS,
+  TV_SHOW,
+  SEASON,
 } from '../constants/routes';
 
 Vue.use(VueRouter);
@@ -21,10 +22,18 @@ const routes = [
     component: () => import('../views/Search.vue'),
   },
   {
-    path: DETAILS.PATH,
-    name: DETAILS.NAME,
+    path: TV_SHOW.PATH,
+    name: TV_SHOW.NAME,
     component: () => import('../views/Details.vue'),
     props: true,
+    children: [
+      {
+        path: SEASON.PATH,
+        name: SEASON.NAME,
+        component: () => import('../views/Details.vue'),
+        props: true,
+      },
+    ],
   },
 ];
 
