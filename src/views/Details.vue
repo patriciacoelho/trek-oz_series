@@ -101,7 +101,7 @@
           </div>
           <div
             class="pt-3"
-            v-if="renderType !== 'season'"
+            v-if="type !== 'season'"
           >
             <p
               class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
@@ -209,14 +209,13 @@ import {
   getSerieDetails,
   getSerieCredits,
   getSerieSeason,
+  getSerieSummary,
 } from '@/services';
-import {
-//
-} from 'vue-feather-icons';
 import AppHeader from '../components/AppHeader.vue';
 import ActorsCarousel from '../components/ActorsCarousel.vue';
 import CheckableCard from '../components/CheckableCard.vue';
 import EpisodePanelHeader from '../components/EpisodePanelHeader.vue';
+import { SEASON } from '../constants/routes';
 
 export default {
   components: {
@@ -230,22 +229,21 @@ export default {
     ids: {
       type: Object,
       default: null,
-      required: true,
-    },
-    type: {
-      type: String,
-      default: 'show',
     },
     seasonNumber: {
-      type: Number,
+      type: [Number, String],
       default: null,
+    },
+    slug: {
+      type: String,
+      default: null,
+      required: true,
     },
   },
 
   data() {
     return {
-      renderType: this.type,
-      seasonIndex: this.seasonNumber,
+      internalIds: this.ids,
       loading: false,
       error: false,
       loadingCast: false,
@@ -261,15 +259,19 @@ export default {
   },
 
   beforeMount() {
+    if (this.internalIds === null) {
+      this.handleDirectRouteAccess();
+      return;
+    }
     this.fillSerieDetails();
-    if (this.renderType === 'season') {
+    if (this.type === 'season') {
       this.fillSeasonDetails();
     }
     this.fillCastInfo();
   },
 
   watch: {
-    renderType(value) {
+    type(value) {
       if (value === 'season') {
         this.fillSeasonDetails();
       }
@@ -277,10 +279,24 @@ export default {
   },
 
   methods: {
+    handleDirectRouteAccess() {
+      getSerieSummary(this.slug).then(({ ids }) => {
+        this.internalIds = ids;
+        this.fillSerieDetails();
+        if (this.type === 'season') {
+          this.fillSeasonDetails();
+        }
+        this.fillCastInfo();
+      }).catch(() => {
+        // redirect to 404 page
+        this.$router.push('/');
+      });
+    },
+
     fillSeasonDetails() {
       this.loadingSeason = true;
       this.errorSeason = false;
-      getSerieSeason(this.ids.tmdb, this.seasonIndex).then((data) => {
+      getSerieSeason(this.internalIds.tmdb, this.seasonNumber).then((data) => {
         const totalEpisodes = data.episodes.length;
         const firstAirDate = data.episodes[0].air_date;
         const lastAirDate = data.episodes[totalEpisodes - 1].air_date;
@@ -308,7 +324,7 @@ export default {
     fillSerieDetails() {
       this.loading = true;
       this.error = false;
-      getSerieDetails(this.ids.tmdb).then((data) => {
+      getSerieDetails(this.internalIds.tmdb).then((data) => {
         this.show = data;
         const genres = this.show.genres.map((genre) => genre.name);
         const seasons = this.show.seasons.map((season) => ({
@@ -337,7 +353,7 @@ export default {
     fillCastInfo() {
       this.loadingCast = true;
       this.errorCast = false;
-      getSerieCredits(this.ids.tmdb).then(({ cast }) => {
+      getSerieCredits(this.internalIds.tmdb).then(({ cast }) => {
         this.cast = cast.map((actor) => ({
           ...actor,
           src: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
@@ -358,10 +374,6 @@ export default {
     },
 
     returnToPreviousPage() {
-      if (this.renderType === 'season') {
-        this.renderType = 'show';
-        return;
-      }
       this.$router.go(-1);
     },
 
@@ -371,12 +383,21 @@ export default {
     },
 
     redirect(index) {
-      this.renderType = 'season';
-      this.seasonIndex = this.show.seasons[index].season_number;
+      this.$router.push({
+        name: SEASON.NAME,
+        params: {
+          seasonNumber: this.show.seasons[index].season_number,
+          ids: this.internalIds,
+        },
+      });
     },
   },
 
   computed: {
+    type() {
+      return this.seasonNumber !== null ? 'season' : 'tv-show';
+    },
+
     expandedHeight() {
       return this.headerHeight === '130px' ? 'expanded-body' : '';
     },
@@ -386,15 +407,15 @@ export default {
     },
 
     premiere() {
-      return this.renderType === 'season' ? this.season.first_air_date : this.show.first_air_date;
+      return this.type === 'season' ? this.season.first_air_date : this.show.first_air_date;
     },
 
     finale() {
-      return this.renderType === 'season' ? this.season.last_air_date : this.show.last_air_date;
+      return this.type === 'season' ? this.season.last_air_date : this.show.last_air_date;
     },
 
     numberOfEpisodes() {
-      if (this.renderType === 'season') {
+      if (this.type === 'season') {
         return `${this.season.number_of_episodes} episódios na temporada`;
       }
       return `${this.show.number_of_episodes} em ${this.show.number_of_seasons} temporadas`;
@@ -402,8 +423,8 @@ export default {
 
     ready() {
       return !(this.loading && this.loadingCast)
-        && (this.renderType !== 'season' || !this.loadingSeason)
-        && (this.renderType !== 'season' || !this.errorSeason)
+        && (this.type !== 'season' || !this.loadingSeason)
+        && (this.type !== 'season' || !this.errorSeason)
         && !(this.error && this.errorCast);
     },
   },
