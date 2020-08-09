@@ -63,7 +63,7 @@ import {
   SearchIcon,
   TvIcon,
 } from 'vue-feather-icons';
-import { DETAILS } from '../constants/routes';
+import { TV_SHOW } from '../constants/routes';
 import CheckableCard from '../components/CheckableCard.vue';
 
 export default {
@@ -82,6 +82,10 @@ export default {
     };
   },
 
+  beforeMount() {
+    this.handleQuery();
+  },
+
   methods: {
     handleCheck(index) {
       this.cards[index].loading = true;
@@ -91,7 +95,13 @@ export default {
     handleSearch() {
       this.loading = true;
       this.error = false;
-      getSeriesBySearch(this.search)
+      this.$router.replace({ query: { q: this.search } });
+      this.handleQuery();
+    },
+
+    handleQuery() {
+      const query = this.$route.query.q;
+      getSeriesBySearch(query)
         .then((results) => {
           this.cards = results.map((result) => ({
             ...result.show,
@@ -109,6 +119,7 @@ export default {
 
     loadImages() {
       this.cards.forEach((card) => {
+        card.loading = true;
         getSeriePosters(card.ids.tmdb)
           .then((posters) => {
             const filePath = posters[0].file_path || null;
@@ -119,15 +130,20 @@ export default {
             card.src = imageUrl;
             card.loading = false;
           })
-          .catch(({ message }) => {
-            console.log(message);
+          .catch(() => {
             card.loading = false;
           });
       });
     },
 
     redirect(index) {
-      this.$router.push({ name: DETAILS.NAME, params: { ids: this.cards[index].ids } });
+      this.$router.push({
+        name: TV_SHOW.NAME,
+        params: {
+          slug: this.cards[index].ids.slug,
+          ids: this.cards[index].ids,
+        },
+      });
     },
   },
 };
