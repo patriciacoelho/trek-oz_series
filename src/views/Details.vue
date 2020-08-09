@@ -7,6 +7,7 @@
       class="overflow-hidden"
     >
       <app-header
+        v-if="show.name"
         :title="show.name"
         :backdrop-image="show.backdrop_src"
         :subtitle="subtitle"
@@ -32,14 +33,16 @@
               {{show.genres.join(', ')}}
             </v-col>
             <v-col
+              v-if="show.status"
               class="pb-1 pt-0"
               cols="6"
               md="3"
             >
               <span class="caption text-uppercase"> Status: </span><br>
-              {{show.status}}
+              {{status}}
             </v-col>
             <v-col
+              v-if="premiere"
               class="pb-1 pt-0"
               cols="6"
               md="3"
@@ -48,7 +51,7 @@
               {{premiere}}
             </v-col>
             <v-col
-              v-if="show.last_air_date"
+              v-if="finale"
               class="pb-1 pt-0"
               cols="6"
               md="3"
@@ -57,6 +60,7 @@
               {{finale}}
             </v-col>
             <v-col
+              v-if="show.episode_run_time"
               class="pb-1 pt-0"
               cols="6"
               md="3"
@@ -65,6 +69,7 @@
               {{show.episode_run_time}} min
             </v-col>
             <v-col
+              v-if="show.status !== STATUS.IN_PRODUCTION"
               class="pb-1 pt-0"
               cols="6"
               md="3"
@@ -76,6 +81,7 @@
         </v-card-subtitle>
         <v-card-text>
           <div
+            v-if="overview"
             class="pt-3"
           >
             <p
@@ -84,7 +90,7 @@
               Sinopse
             </p>
             <v-divider class="mb-5"/>
-            {{show.overview}}
+            {{overview}}
           </div>
           <div
             class="pt-3"
@@ -100,8 +106,8 @@
             />
           </div>
           <div
+            v-if="showSeasonSection"
             class="pt-3"
-            v-if="type !== 'season'"
           >
             <p
               class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
@@ -126,7 +132,7 @@
             </v-row>
           </div>
           <div
-            v-else
+            v-if="showEpisodesSection"
             class="pt-3"
           >
             <p
@@ -216,6 +222,7 @@ import ActorsCarousel from '../components/ActorsCarousel.vue';
 import CheckableCard from '../components/CheckableCard.vue';
 import EpisodePanelHeader from '../components/EpisodePanelHeader.vue';
 import { SEASON } from '../constants/routes';
+import { STATUS_TRANSLATION, STATUS } from '../constants/status';
 
 export default {
   components: {
@@ -243,6 +250,7 @@ export default {
 
   data() {
     return {
+      STATUS,
       internalIds: this.ids,
       loading: false,
       error: false,
@@ -341,7 +349,7 @@ export default {
           episode_run_time: data.episode_run_time[0],
           first_air_date: data.first_air_date ? moment(data.first_air_date).format('DD [de] MMMM [de] YYYY') : null,
           last_air_date: data.last_air_date ? moment(data.last_air_date).format('DD [de] MMMM [de] YYYY') : null,
-          backdrop_src: `https://image.tmdb.org/t/p/w780${data.backdrop_path}`,
+          backdrop_src: `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`,
         };
         this.loading = false;
       }).catch(() => {
@@ -403,7 +411,15 @@ export default {
     },
 
     subtitle() {
-      return this.season ? this.season.name : null;
+      return this.type === 'season' ? this.season.name : null;
+    },
+
+    status() {
+      return STATUS_TRANSLATION[this.show.status] ?? this.show.status;
+    },
+
+    overview() {
+      return this.type === 'season' ? this.season.overview : this.show.overview;
     },
 
     premiere() {
@@ -419,6 +435,14 @@ export default {
         return `${this.season.number_of_episodes} episódios na temporada`;
       }
       return `${this.show.number_of_episodes} em ${this.show.number_of_seasons} temporadas`;
+    },
+
+    showSeasonSection() {
+      return this.type !== 'season' && this.show.status !== STATUS.IN_PRODUCTION;
+    },
+
+    showEpisodesSection() {
+      return this.type === 'season' && this.show.status !== STATUS.IN_PRODUCTION;
     },
 
     ready() {

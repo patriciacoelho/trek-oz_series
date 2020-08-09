@@ -6,6 +6,7 @@
       rounded
       label="Buscar"
       solo
+      @input="newSearch = true"
       @keydown.enter="handleSearch"
     >
       <template v-slot:label>
@@ -34,6 +35,13 @@
       type="error"
     >
       Ops, tivemos um problema de conexão. Se o problema persistir contate o suporte.
+    </v-alert>
+    <v-alert
+      v-else-if="noResults"
+      dense
+      text
+    >
+      Nenhum resultado encontrado para "{{search}}"
     </v-alert>
     <v-row
       v-else
@@ -76,9 +84,10 @@ export default {
   data() {
     return {
       search: '',
-      cards: [],
+      cards: null,
       loading: false,
       error: false,
+      newSearch: false,
     };
   },
 
@@ -93,14 +102,18 @@ export default {
     },
 
     handleSearch() {
-      this.loading = true;
-      this.error = false;
+      if (!this.search) return;
       this.$router.replace({ query: { q: this.search } });
+      this.newSearch = false;
       this.handleQuery();
     },
 
     handleQuery() {
       const query = this.$route.query.q;
+      if (!query) return;
+      this.loading = true;
+      this.error = false;
+      this.cards = null;
       getSeriesBySearch(query)
         .then((results) => {
           this.cards = results.map((result) => ({
@@ -144,6 +157,12 @@ export default {
           ids: this.cards[index].ids,
         },
       });
+    },
+  },
+
+  computed: {
+    noResults() {
+      return !this.newSearch && this.cards !== null && !this.cards.length;
     },
   },
 };
