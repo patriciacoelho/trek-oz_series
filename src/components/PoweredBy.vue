@@ -1,6 +1,6 @@
 <template>
   <footer class="powered-by">
-    <span v-if="showTextSpan">
+    <span>
       Powered by
     </span>
     <a href="https://trakt.tv/" class="d-flex">
@@ -17,7 +17,6 @@ export default {
   data() {
     return {
       sheet: false,
-      showTextSpan: window.screen.width > 375,
     };
   },
 };
