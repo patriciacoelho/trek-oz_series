@@ -8,7 +8,7 @@ import {
 // *** TRAKT API ***
 // ...................
 export const getSeriesBySearch = (query) => trakt.get('/search/show', { params: { query } }).then(({ data }) => data);
-export const getSerieSummary = (id) => trakt.get(`/shows/${id}?extended=full`).then(({ data }) => data);
+export const getSerieSummary = (id, extended) => trakt.get(`/shows/${id}`, { params: { extended } }).then(({ data }) => data);
 
 // ...................
 // *** TMDB API ***
