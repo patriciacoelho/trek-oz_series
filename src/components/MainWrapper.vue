@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <v-app>
-      <v-main
-        :class="padding"
-      >
-        <slot/>
-      </v-main>
-    </v-app>
+  <v-app>
+    <v-main
+      :class="padding"
+    >
+      <slot/>
+    </v-main>
     <nav-bar v-if="!noMenu"/>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -26,10 +24,10 @@ export default {
     },
   },
 
-  data() {
-    return {
-      padding: !this.noMenu ?? 'pb-main',
-    };
+  computed: {
+    padding() {
+      return !this.noMenu ? 'pb-main' : 'pb-0';
+    },
   },
 };
 </script>
