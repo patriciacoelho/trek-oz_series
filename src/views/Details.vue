@@ -223,6 +223,7 @@ import CheckableCard from '../components/CheckableCard.vue';
 import EpisodePanelHeader from '../components/EpisodePanelHeader.vue';
 import { SEASON } from '../constants/routes';
 import { STATUS_TRANSLATION, STATUS } from '../constants/status';
+import { GENRES_TRANSLATION } from '../constants/genres';
 
 export default {
   components: {
@@ -334,7 +335,9 @@ export default {
       this.error = false;
       getSerieDetails(this.internalIds.tmdb).then((data) => {
         this.show = data;
-        const genres = this.show.genres.map((genre) => genre.name);
+        const genres = this.show.genres.map(
+          (genre) => GENRES_TRANSLATION[genre.name] ?? genre.name,
+        );
         const seasons = this.show.seasons.map((season) => ({
           id: season.id,
           season_number: season.season_number,
