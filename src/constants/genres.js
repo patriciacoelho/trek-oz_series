@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 export const GENRES = {
   ACTION_ADVENTURE: 'Action & Adventure',
   KIDS: 'Kids',
@@ -88,5 +89,41 @@ export const ALL_GENRES = [
   {
     id: 37,
     name: GENRES.WESTERN,
+  },
+];
+
+export const CAROUSEL_GENRES = [
+  {
+    name: GENRES.MYSTERY,
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.MYSTERY).id,
+      without_genres: ALL_GENRES.find((genre) => genre.name === GENRES.SCI_FI_FANTASY).id,
+    },
+    src: require('@/assets/[genero]detetive.png'),
+  },
+  {
+    name: GENRES.SCI_FI_FANTASY,
+    query: {},
+    src: require('@/assets/[genero]fantasia.png'),
+  },
+  {
+    name: GENRES.FAMILY,
+    query: {},
+    src: require('@/assets/[genero]familia.png'),
+  },
+  {
+    name: GENRES.ACTION_ADVENTURE,
+    query: {},
+    src: require('@/assets/[genero]aventura.png'),
+  },
+  {
+    name: GENRES.COMEDY,
+    query: {},
+    src: require('@/assets/[genero]comedia.png'),
+  },
+  {
+    name: GENRES.DRAMA,
+    query: {},
+    src: require('@/assets/[genero]drama.png'),
   },
 ];
