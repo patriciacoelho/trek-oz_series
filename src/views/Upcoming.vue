@@ -17,7 +17,9 @@
         <v-divider class="my-3" />
       </div>
       <div>
-        <!-- <genres-carousel :genres="CAROUSEL_GENRES"/> -->
+        <episode-card-carousel
+          :cards="airingToday"
+        />
       </div>
       <div
         class="pt-3"
@@ -37,33 +39,37 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
 import {
   CalendarIcon,
   TvIcon,
 } from 'vue-feather-icons';
 import {
   getOnTheAir,
+  getAiringToday,
 } from '@/services';
 import CheckableCardCarousel from '../components/CheckableCardCarousel.vue';
+import EpisodeCardCarousel from '../components/EpisodeCardCarousel.vue';
 
 export default {
   components: {
     CalendarIcon,
     TvIcon,
     CheckableCardCarousel,
+    EpisodeCardCarousel,
   },
 
   data() {
     return {
       tab: null,
       onTheAir: null,
+      airingToday: null,
       loading: false,
     };
   },
 
   mounted() {
     this.fillOnTheAir();
+    this.fillAiringToday();
   },
 
   methods: {
@@ -73,6 +79,17 @@ export default {
           ...result,
           title: result.name,
           src: `https://image.tmdb.org/t/p/w342${result.poster_path}`,
+          loading: false,
+        })).slice(0, 9);
+      });
+    },
+
+    fillAiringToday() {
+      getAiringToday().then(({ results }) => {
+        this.airingToday = results.map((result) => ({
+          ...result,
+          title: result.name,
+          src: `https://image.tmdb.org/t/p/w1280${result.backdrop_path}`,
           loading: false,
         })).slice(0, 9);
       });
