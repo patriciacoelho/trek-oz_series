@@ -12,15 +12,15 @@
         class="d-flex justify-center px-0 pb-5"
       >
         <v-card
-          width="130px"
-          height="130px"
+          width="100px"
+          height="100px"
           class="d-flex justify-center align-center"
           rounded="lg"
         >
           <v-img
             :src="genre.src"
-            max-width="100"
-            max-height="100"
+            max-width="80"
+            max-height="80"
             class="mb-2"
           />
         </v-card>
@@ -50,6 +50,7 @@ export default {
     return {
       slickOptions: {
         dots: true,
+        arrows: false,
         focusOnSelect: false,
         infinite: false,
         speed: 500,
