@@ -32,7 +32,11 @@
         <grid-icon />
       </v-btn>
 
-      <v-btn id="calendar">
+      <v-btn
+        id="calendar"
+        :to="UPCOMING.PATH"
+        :value="UPCOMING.PATH"
+      >
         <calendar-icon />
       </v-btn>
 
@@ -55,6 +59,7 @@ import PoweredBy from './PoweredBy.vue';
 import {
   HOME,
   SEARCH,
+  UPCOMING,
 } from '../constants/routes';
 
 export default {
@@ -74,6 +79,7 @@ export default {
       nav: this.$router.currentRoute.path,
       HOME,
       SEARCH,
+      UPCOMING,
     };
   },
 };
