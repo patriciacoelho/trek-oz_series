@@ -9,6 +9,7 @@ import {
 // ...................
 export const getSeriesBySearch = (query) => trakt.get('/search/show', { params: { query } }).then(({ data }) => data);
 export const getSerieSummary = (id, extended) => trakt.get(`/shows/${id}`, { params: { extended } }).then(({ data }) => data);
+export const getSerieIdsbyTmdbId = (id) => trakt.get(`/search/tmdb/${id}?type=show`).then(({ data }) => data);
 
 // ...................
 // *** TMDB API ***
@@ -20,7 +21,6 @@ export const getSerieSeason = (id, N) => tmdb.get(`/tv/${id}/season/${N}?api_key
 
 export const getSeriesDiscovery = (filters) => tmdb.get(`/discover/tv?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`, { params: filters }).then(({ data }) => data);
 export const getMostPopular = () => tmdb.get(`/tv/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getMostNewly = () => tmdb.get(`/tv/latest?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
 export const getWeeklyTrending = () => tmdb.get(`/trending/tv/week?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
 
 export const getGenresList = () => tmdb.get(`/genre/tv/list?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}`).then(({ data }) => data);
