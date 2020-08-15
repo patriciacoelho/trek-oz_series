@@ -19,6 +19,18 @@ export const GENRES = {
 };
 
 export const GENRES_TRANSLATION = {
+  [GENRES.ANIMATION]: 'Animação',
+  [GENRES.COMEDY]: 'Comédia',
+  [GENRES.CRIME]: 'Crime',
+  [GENRES.DOCUMENTARY]: 'Documentário',
+  [GENRES.DRAMA]: 'Drama',
+  [GENRES.FAMILY]: 'Família',
+  [GENRES.MYSTERY]: 'Mistério',
+  [GENRES.NEWS]: 'News',
+  [GENRES.REALITY]: 'Reality',
+  [GENRES.SOAP]: 'Soap',
+  [GENRES.TALK]: 'Talk',
+  [GENRES.WESTERN]: 'Faroeste',
   [GENRES.ACTION_ADVENTURE]: 'Ação e Aventura',
   [GENRES.KIDS]: 'Infantil',
   [GENRES.SCI_FI_FANTASY]: 'Ficção Cientifica e Fantasia',
@@ -103,27 +115,43 @@ export const CAROUSEL_GENRES = [
   },
   {
     name: GENRES.SCI_FI_FANTASY,
-    query: {},
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.SCI_FI_FANTASY).id,
+      without_genres: ALL_GENRES.find((genre) => genre.name === GENRES.ACTION_ADVENTURE).id,
+    },
     src: require('@/assets/[genero]fantasia.png'),
   },
   {
     name: GENRES.FAMILY,
-    query: {},
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.FAMILY).id,
+    },
     src: require('@/assets/[genero]familia.png'),
   },
   {
     name: GENRES.ACTION_ADVENTURE,
-    query: {},
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.ACTION_ADVENTURE).id,
+      without_genres:
+        `${ALL_GENRES.find((genre) => genre.name === GENRES.MYSTERY).id},
+        ${ALL_GENRES.find((genre) => genre.name === GENRES.SCI_FI_FANTASY).id}`,
+    },
     src: require('@/assets/[genero]aventura.png'),
   },
   {
     name: GENRES.COMEDY,
-    query: {},
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.COMEDY).id,
+      without_genres: ALL_GENRES.find((genre) => genre.name === GENRES.MYSTERY).id,
+    },
     src: require('@/assets/[genero]comedia.png'),
   },
   {
     name: GENRES.DRAMA,
-    query: {},
+    query: {
+      with_genres: ALL_GENRES.find((genre) => genre.name === GENRES.DRAMA).id,
+      without_genres: ALL_GENRES.find((genre) => genre.name === GENRES.ANIMATION).id,
+    },
     src: require('@/assets/[genero]drama.png'),
   },
 ];
