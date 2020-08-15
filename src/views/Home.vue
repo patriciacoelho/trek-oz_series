@@ -1,6 +1,25 @@
 <template>
   <main-wrapper>
-    <v-row
+    <v-text-field
+      v-model="search"
+      class="ma-3"
+      rounded
+      label="Buscar"
+      solo
+      @keydown.enter="handleSearch"
+    >
+      <template v-slot:label>
+        <span class="grey--text text--lighten-1">
+          Que série cê tá procurando?
+        </span>
+        <tv-icon size="1x" class="grey--text text--lighten-1 ml-1 mb-n-1px" />
+      </template>
+      <template v-slot:append>
+        <search-icon class="grey--text text--lighten-1 cursor-pointer" @click="handleSearch"/>
+      </template>
+    </v-text-field>
+    <genres-carousel :genres="CAROUSEL_GENRES"/>
+    <!-- <v-row
       class="ma-3"
     >
       <progress-card
@@ -37,25 +56,40 @@
         :img-src="card.src"
         :title="card.title"
       />
-    </v-row>
+    </v-row> -->
   </main-wrapper>
 </template>
 
 <script>
 /* eslint-disable no-console */
-import CheckableCard from '../components/CheckableCard.vue';
-import ProgressCard from '../components/ProgressCard.vue';
+import {
+  SearchIcon,
+  TvIcon,
+} from 'vue-feather-icons';
+import {
+  getSeriesDiscovery,
+} from '@/services';
+// import CheckableCard from '../components/CheckableCard.vue';
+// import ProgressCard from '../components/ProgressCard.vue';
+import GenresCarousel from '../components/GenresCarousel.vue';
+import { CAROUSEL_GENRES } from '../constants/genres';
+import { SEARCH } from '../constants/routes';
 
 export default {
   name: 'Home',
 
   components: {
-    CheckableCard,
-    ProgressCard,
+    // CheckableCard,
+    // ProgressCard,
+    GenresCarousel,
+    SearchIcon,
+    TvIcon,
   },
 
   data() {
     return {
+      CAROUSEL_GENRES,
+      search: '',
       card: {
         title: 'Castle',
         src: 'https://images.justwatch.com/poster/185616855/s592',
@@ -74,10 +108,27 @@ export default {
     };
   },
 
+  mounted() {
+    // this.fillGenresList();
+  },
+
   methods: {
+    fillGenresList() {
+      const mystery = 9648;
+      const sciFiFantasy = 10765;
+      getSeriesDiscovery({ with_genres: mystery, without_genres: sciFiFantasy }).then((data) => {
+        console.log(data);
+      });
+    },
+
     handleCheck() {
       this.loading = true;
       setTimeout(() => { this.loading = false; }, 5000);
+    },
+
+    handleSearch() {
+      if (!this.search) return;
+      this.$router.push({ name: SEARCH.NAME, query: { q: this.search } });
     },
 
     redirect() {
