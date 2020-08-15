@@ -16,6 +16,7 @@
           height="100px"
           class="d-flex justify-center align-center"
           rounded="lg"
+          @click="redirect(index)"
         >
           <v-img
             :src="genre.src"
@@ -33,6 +34,8 @@
 import VueSlickCarousel from 'vue-slick-carousel';
 import 'vue-slick-carousel/dist/vue-slick-carousel.css';
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
+import { LIST } from '../constants/routes';
+import { GENRES_TRANSLATION } from '../constants/genres';
 
 export default {
   components: {
@@ -103,6 +106,20 @@ export default {
         ],
       },
     };
+  },
+
+  methods: {
+    redirect(index) {
+      const name = GENRES_TRANSLATION[this.genres[index].name];
+      this.$router.push({
+        name: LIST.NAME,
+        params: {
+          query: this.genres[index].query,
+          type: 'genre',
+          name,
+        },
+      });
+    },
   },
 };
 </script>
