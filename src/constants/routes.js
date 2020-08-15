@@ -17,3 +17,8 @@ export const SEASON = {
   NAME: 'Season',
   PATH: 'season/:seasonNumber',
 };
+
+export const LIST = {
+  NAME: 'List',
+  PATH: '/list/:type',
+};

@@ -6,6 +6,7 @@ import {
   SEARCH,
   TV_SHOW,
   SEASON,
+  LIST,
 } from '../constants/routes';
 
 Vue.use(VueRouter);
@@ -34,6 +35,12 @@ const routes = [
         props: true,
       },
     ],
+  },
+  {
+    path: LIST.PATH,
+    name: LIST.NAME,
+    component: () => import('../views/List.vue'),
+    props: true,
   },
 ];
 

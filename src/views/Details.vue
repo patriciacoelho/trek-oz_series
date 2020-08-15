@@ -245,7 +245,6 @@ export default {
     slug: {
       type: String,
       default: null,
-      required: true,
     },
   },
 

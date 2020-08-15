@@ -111,6 +111,7 @@ export default {
     handleQuery() {
       const query = this.$route.query.q;
       if (!query) return;
+      this.search = query;
       this.loading = true;
       this.error = false;
       this.cards = null;
