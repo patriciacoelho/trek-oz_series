@@ -24,28 +24,6 @@
       <div>
         <genres-carousel :genres="CAROUSEL_GENRES"/>
       </div>
-      <!-- <v-row
-        class="ma-3"
-      >
-        <progress-card
-          class="mr-3"
-          :title="otherCard.title"
-          :img-src="otherCard.src"
-          :completed="19"
-          :total="23"
-          :next-episode="otherCard.nextEpisode"
-          :loading="loading"
-          :disabled="loading"
-          @status-changed="handleCheck"
-          @click="redirect"
-        />
-        <progress-card
-          :img-src="otherCard.src"
-          :completed="otherCard.watched"
-          :total="otherCard.total"
-          :next-episode="otherCard.nextEpisode"
-        />
-      </v-row> -->
       <div
         class="pt-3"
       >
@@ -96,7 +74,6 @@ import {
   getWeeklyTrending,
 } from '@/services';
 import CheckableCardCarousel from '../components/CheckableCardCarousel.vue';
-// import ProgressCard from '../components/ProgressCard.vue';
 import GenresCarousel from '../components/GenresCarousel.vue';
 import { CAROUSEL_GENRES } from '../constants/genres';
 import { SEARCH } from '../constants/routes';
@@ -106,7 +83,6 @@ export default {
 
   components: {
     CheckableCardCarousel,
-    // ProgressCard,
     GenresCarousel,
     SearchIcon,
     TvIcon,
@@ -120,36 +96,17 @@ export default {
       mostPopular: null,
       mostNewly: null,
       trending: null,
-      otherCard: {
-        title: 'Psych',
-        watched: 90,
-        total: 121,
-        nextEpisode: {
-          ref: '2x09',
-          title: 'Flesh and Blood',
-        },
-        src: 'https://i1.wp.com/elrincon.tv/wp-content/uploads/2014/02/psych.jpg',
-      },
       loading: false,
     };
   },
 
   mounted() {
-    // this.fillGenresList();
     this.fillTrending();
     this.fillMostPopular();
     this.fillMostNewly();
   },
 
   methods: {
-    fillGenresList() {
-      const mystery = 9648;
-      const sciFiFantasy = 10765;
-      getSeriesDiscovery({ with_genres: mystery, without_genres: sciFiFantasy }).then((data) => {
-        console.log(data);
-      });
-    },
-
     fillMostPopular() {
       getMostPopular().then(({ results }) => {
         this.mostPopular = results.map((result) => ({
