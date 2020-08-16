@@ -1,4 +1,4 @@
-importScripts("/trek-oz_series/precache-manifest.abd6929aef075d916aca1f527ab19058.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+importScripts("/trek-oz_series/precache-manifest.6a76d871bdb1d65110b1ba1353c8b046.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 /* eslint-disable */
 /* eslint-disable no-undef */
