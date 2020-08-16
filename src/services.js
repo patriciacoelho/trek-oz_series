@@ -22,6 +22,8 @@ export const getSerieSeason = (id, N) => tmdb.get(`/tv/${id}/season/${N}?api_key
 export const getSeriesDiscovery = (filters) => tmdb.get(`/discover/tv?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`, { params: filters }).then(({ data }) => data);
 export const getMostPopular = () => tmdb.get(`/tv/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
 export const getWeeklyTrending = () => tmdb.get(`/trending/tv/week?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
+export const getAiringToday = () => tmdb.get(`/tv/airing_today?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
+export const getOnTheAir = () => tmdb.get(`/tv/on_the_air?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
 
 export const getGenresList = () => tmdb.get(`/genre/tv/list?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}`).then(({ data }) => data);
 

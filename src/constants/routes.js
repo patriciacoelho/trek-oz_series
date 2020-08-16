@@ -22,3 +22,8 @@ export const LIST = {
   NAME: 'List',
   PATH: '/list/:type',
 };
+
+export const UPCOMING = {
+  NAME: 'Upcoming',
+  PATH: '/upcoming',
+};

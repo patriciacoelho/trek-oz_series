@@ -7,6 +7,7 @@ import {
   TV_SHOW,
   SEASON,
   LIST,
+  UPCOMING,
 } from '../constants/routes';
 
 Vue.use(VueRouter);
@@ -16,6 +17,11 @@ const routes = [
     path: HOME.PATH,
     name: HOME.NAME,
     component: () => import('../views/Home.vue'),
+  },
+  {
+    path: UPCOMING.PATH,
+    name: UPCOMING.NAME,
+    component: () => import('../views/Upcoming.vue'),
   },
   {
     path: SEARCH.PATH,
