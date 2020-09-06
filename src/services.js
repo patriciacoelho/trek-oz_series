@@ -14,18 +14,18 @@ export const getSerieIdsbyTmdbId = (id) => trakt.get(`/search/tmdb/${id}?type=sh
 // ...................
 // *** TMDB API ***
 // ...................
-export const getSeriePosters = (id) => tmdb.get(`/tv/${id}/images?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}`).then(({ data }) => data.posters);
-export const getSerieDetails = (id) => tmdb.get(`/tv/${id}?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getSerieCredits = (id) => tmdb.get(`/tv/${id}/credits?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getSerieSeason = (id, N) => tmdb.get(`/tv/${id}/season/${N}?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
+export const getSeriePosters = (id) => tmdb.get(`/tv/${id}/images`).then(({ data }) => data.posters);
+export const getSerieDetails = (id) => tmdb.get(`/tv/${id}`).then(({ data }) => data);
+export const getSerieCredits = (id) => tmdb.get(`/tv/${id}/credits`).then(({ data }) => data);
+export const getSerieSeason = (id, N) => tmdb.get(`/tv/${id}/season/${N}`).then(({ data }) => data);
 
-export const getSeriesDiscovery = (filters) => tmdb.get(`/discover/tv?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`, { params: filters }).then(({ data }) => data);
-export const getMostPopular = () => tmdb.get(`/tv/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getWeeklyTrending = () => tmdb.get(`/trending/tv/week?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getAiringToday = () => tmdb.get(`/tv/airing_today?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
-export const getOnTheAir = () => tmdb.get(`/tv/on_the_air?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}&language=pt-BR`).then(({ data }) => data);
+export const getSeriesDiscovery = (filters) => tmdb.get('/discover/tv', { params: filters }).then(({ data }) => data);
+export const getMostPopular = () => tmdb.get('/tv/popular').then(({ data }) => data);
+export const getWeeklyTrending = () => tmdb.get('/trending/tv/week').then(({ data }) => data);
+export const getAiringToday = () => tmdb.get('/tv/airing_today').then(({ data }) => data);
+export const getOnTheAir = () => tmdb.get('/tv/on_the_air').then(({ data }) => data);
 
-export const getGenresList = () => tmdb.get(`/genre/tv/list?api_key=${process.env.VUE_APP_TMDB_API_KEY_V3}`).then(({ data }) => data);
+export const getGenresList = () => tmdb.get('/genre/tv/list').then(({ data }) => data);
 
 // ...................
 // *** FANART API ***
