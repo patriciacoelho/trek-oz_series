@@ -63,10 +63,8 @@
 
 <script>
 /* eslint-disable no-console */
-import {
-  getSeriesBySearch,
-  getSeriePosters,
-} from '@/services';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { getSeriePosters } from '@/services';
 import {
   SearchIcon,
   TvIcon,
@@ -92,13 +90,38 @@ export default {
   },
 
   beforeMount() {
-    this.handleQuery();
+    this.checkStore();
+  },
+
+  watch: {
+    search(newValue) {
+      if (this.hasResults && newValue !== this.lastSearch.query) {
+        this.clearLastSearch();
+        this.cards = this.lastSearch.results;
+      }
+    },
   },
 
   methods: {
+    ...mapActions('search', ['fetchSearchResults', 'clearLastSearch']),
+
     handleCheck(index) {
       this.cards[index].loading = true;
       setTimeout(() => { this.cards[index].loading = false; }, 5000);
+    },
+
+    checkStore() {
+      const query = this.$route.query.q;
+      const verifyQuery = !query || query === this.lastSearch.query;
+      if (verifyQuery && this.hasResults) {
+        if (!query) {
+          this.$router.replace({ query: { q: this.lastSearch.query } });
+        }
+        this.search = this.lastSearch.query;
+        this.cards = this.lastSearch.results;
+      } else {
+        this.handleQuery();
+      }
     },
 
     handleSearch() {
@@ -115,13 +138,9 @@ export default {
       this.loading = true;
       this.error = false;
       this.cards = null;
-      getSeriesBySearch(query)
-        .then((results) => {
-          this.cards = results.map((result) => ({
-            ...result.show,
-            src: '',
-            loading: true,
-          }));
+      this.fetchSearchResults(query)
+        .then(() => {
+          this.cards = this.lastSearch.results;
           this.loading = false;
           this.loadImages();
         })
@@ -162,8 +181,14 @@ export default {
   },
 
   computed: {
+    ...mapState('search', ['lastSearch']),
+
+    ...mapGetters('search', {
+      hasResults: 'searchFoundAnyResults',
+    }),
+
     noResults() {
-      return !this.newSearch && this.cards !== null && !this.cards.length;
+      return !!this.search && !this.newSearch && !this.hasResults;
     },
   },
 };
