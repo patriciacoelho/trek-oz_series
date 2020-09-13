@@ -56,12 +56,43 @@
           </v-tab-item>
         </v-tabs-items>
       </div>
+      <div
+        class="pt-3"
+      >
+        <p
+          class="mx-3 mb-3 caption pr-3 text-end text-uppercase"
+        >
+          Recomendações
+        </p>
+        <v-divider class="mb-3"></v-divider>
+        <div v-if="!isAuthenticated">
+          <p>
+            Para ter acesso a 'Recomendações' você precisa estar logado em uma conta Trakt.tv
+          </p>
+          <v-btn
+            color="primary"
+            block
+            x-large
+            depressed
+            outlined
+            class="mt-4 text-none text-center font-weight-bold"
+            @click="redirectToLogin"
+          >
+            Entrar na conta
+          </v-btn>
+        </div>
+        <checkable-card-carousel
+          v-else
+          :cards="recommendations"
+        />
+      </div>
     </div>
   </main-wrapper>
 </template>
 
 <script>
 /* eslint-disable no-console */
+import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import {
@@ -72,6 +103,8 @@ import {
   getSeriesDiscovery,
   getMostPopular,
   getWeeklyTrending,
+  getRecommendations,
+  getSeriePosters,
 } from '@/services';
 import CheckableCardCarousel from '../components/CheckableCardCarousel.vue';
 import GenresCarousel from '../components/GenresCarousel.vue';
@@ -96,6 +129,7 @@ export default {
       mostPopular: null,
       mostNewly: null,
       trending: null,
+      recommendations: null,
       loading: false,
     };
   },
@@ -104,9 +138,59 @@ export default {
     this.fillTrending();
     this.fillMostPopular();
     this.fillMostNewly();
+    if (this.isAuthenticated) {
+      this.fillRecommendations();
+    }
+  },
+
+  computed: {
+    ...mapGetters('auth', {
+      isAuthenticated: 'isAuthenticated',
+    }),
   },
 
   methods: {
+    ...mapActions('auth', {
+      startAuthentication: 'startAuthentication',
+    }),
+
+    fillRecommendations() {
+      getRecommendations().then((results) => {
+        this.recommendations = results.map((result) => ({
+          ...result,
+          src: '',
+          loading: true,
+        }));
+        this.loadImages();
+      });
+    },
+
+    loadImages() {
+      this.recommendations.forEach((card) => {
+        card.loading = true;
+        getSeriePosters(card.ids.tmdb)
+          .then((posters) => {
+            const filePath = posters[0].file_path || null;
+            let imageUrl = '';
+            if (filePath) {
+              imageUrl = `https://image.tmdb.org/t/p/w342${filePath}`;
+            }
+            card.src = imageUrl;
+            card.loading = false;
+          })
+          .catch(() => {
+            card.loading = false;
+          });
+      });
+    },
+
+    redirectToLogin() {
+      this.startAuthentication({ path: this.$route.path })
+        .then((url) => {
+          window.location = url;
+        });
+    },
+
     fillMostPopular() {
       getMostPopular().then(({ results }) => {
         this.mostPopular = results.map((result) => ({
