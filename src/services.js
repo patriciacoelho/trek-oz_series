@@ -7,6 +7,23 @@ import {
 // ...................
 // *** TRAKT API ***
 // ...................
+export const getToken = ({
+  code,
+  clientId,
+  clientSecret,
+  redirectUri,
+}) => trakt.post('/oauth/token', {
+  code,
+  grant_type: 'authorization_code',
+  client_id: clientId,
+  client_secret: clientSecret,
+  redirect_uri: redirectUri,
+});
+
+// Auth Required Routes
+export const getRecommendations = () => trakt.get('/recommendations/shows').then(({ data }) => data);
+
+// Basic Routes
 export const getSeriesBySearch = (query) => trakt.get('/search/show', { params: { query } }).then(({ data }) => data);
 export const getSerieSummary = (id, extended) => trakt.get(`/shows/${id}`, { params: { extended } }).then(({ data }) => data);
 export const getSerieIdsbyTmdbId = (id) => trakt.get(`/search/tmdb/${id}?type=show`).then(({ data }) => data);
