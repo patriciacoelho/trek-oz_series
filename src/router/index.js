@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store';
 
 import {
   HOME,
@@ -8,15 +9,41 @@ import {
   SEASON,
   LIST,
   UPCOMING,
+  PROFILE,
+  CALLBACK,
 } from '../constants/routes';
 
 Vue.use(VueRouter);
 
+const isAuthenticated = store.getters['auth/isAuthenticated'];
+
+// eslint-disable-next-line no-unused-vars
+const ifAuthenticated = (to, from, next) => {
+  if (isAuthenticated) {
+    next();
+    return;
+  }
+  next('/profile');
+};
+
 const routes = [
+  {
+    path: CALLBACK.PATH,
+    name: CALLBACK.NAME,
+    component: () => import('../views/AuthCallback.vue'),
+    props: (route) => ({
+      ...route.query,
+    }),
+  },
   {
     path: HOME.PATH,
     name: HOME.NAME,
     component: () => import('../views/Home.vue'),
+  },
+  {
+    path: PROFILE.PATH,
+    name: PROFILE.NAME,
+    component: () => import('../views/Profile.vue'),
   },
   {
     path: UPCOMING.PATH,

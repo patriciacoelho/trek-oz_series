@@ -4,10 +4,24 @@ export const trakt = axios.create({
   baseURL: process.env.VUE_APP_TRAKT_BASE_URL,
   timeout: 30000,
   headers: {
+    'Content-Type': 'application/json',
     'trakt-api-version': 2,
     'trakt-api-key': process.env.VUE_APP_TRAKT_CLIENT_ID,
   },
 });
+
+trakt.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('trakt-token');
+
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  Promise.reject,
+);
 
 export const tmdb = axios.create({
   baseURL: process.env.VUE_APP_TMDB_BASE_URL,
