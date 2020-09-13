@@ -27,3 +27,13 @@ export const UPCOMING = {
   NAME: 'Upcoming',
   PATH: '/upcoming',
 };
+
+export const PROFILE = {
+  NAME: 'Profile',
+  PATH: '/profile',
+};
+
+export const CALLBACK = {
+  NAME: 'Callback',
+  PATH: '/callback',
+};
