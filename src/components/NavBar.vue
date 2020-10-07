@@ -28,7 +28,11 @@
         <search-icon />
       </v-btn>
 
-      <v-btn id="dashboard">
+      <v-btn
+        id="dashboard"
+        :to="PROFILE.PATH"
+        :value="PROFILE.PATH"
+      >
         <grid-icon />
       </v-btn>
 
@@ -60,6 +64,7 @@ import {
   HOME,
   SEARCH,
   UPCOMING,
+  PROFILE,
 } from '../constants/routes';
 
 export default {
@@ -80,6 +85,7 @@ export default {
       HOME,
       SEARCH,
       UPCOMING,
+      PROFILE,
     };
   },
 };
